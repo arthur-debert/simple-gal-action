@@ -1,0 +1,41 @@
+# Rust build artifacts
+/target/
+**/*.rs.bk
+*.pdb
+
+# Coverage files
+lcov.info
+coverage/
+*.profraw
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local development
+.envrc
+.direnv/
+local
+
+# Specs test artifacts
+specs/**/*.ast.*
+specs/**/*.treeviz
+specs/**/*.treeviz.*
+.padz
+
+# Simple Gal build outputs
+dist/
+processed/
+manifest.json
+.simple-gal-temp/
+.simple-gal-browser-temp/
+tests/browser/generated/
+.todos.db
+content-no-git
