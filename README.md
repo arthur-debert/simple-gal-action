@@ -2,7 +2,7 @@
 
 GitHub Action to build photography galleries with [simple-gal](https://github.com/arthur-debert/simple-gal).
 
-Downloads a pre-built binary from simple-gal releases, installs image processing dependencies, and runs the build. Pair it with any deployment step (GitHub Pages, Netlify, S3, etc.).
+Downloads a pre-built binary from simple-gal releases and runs the build. No system dependencies needed — the binary is fully self-contained. Pair it with any deployment step (GitHub Pages, Netlify, S3, etc.).
 
 ## Usage
 
@@ -73,9 +73,8 @@ Add a `CNAME` file at the repo root with your domain, and copy it into the outpu
 
 ## How it works
 
-1. Installs system dependencies (ImageMagick, WebP, AVIF)
-2. Downloads the simple-gal binary from [GitHub Releases](https://github.com/arthur-debert/simple-gal/releases)
-3. Runs `simple-gal build --source <input> --output <input>`
+1. Downloads the simple-gal binary from [GitHub Releases](https://github.com/arthur-debert/simple-gal/releases)
+2. Runs `simple-gal build --source <input> --output <input>`
 
 The action only builds. Deployment is handled by your workflow — use GitHub Pages, Netlify, Cloudflare Pages, S3, or any static host.
 
