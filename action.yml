@@ -14,6 +14,10 @@ inputs:
     description: 'simple-gal release version (e.g. "v0.1.1" or "latest")'
     required: false
     default: 'latest'
+  cache:
+    description: 'Enable processed image caching between builds (true/false)'
+    required: false
+    default: 'true'
 
 runs:
   using: 'composite'
@@ -45,6 +49,14 @@ runs:
         chmod +x /tmp/simple-gal-x86_64-linux-gnu
         sudo mv /tmp/simple-gal-x86_64-linux-gnu /usr/local/bin/simple-gal
         rm /tmp/simple-gal.tar.gz
+
+    - name: Restore processed image cache
+      if: inputs.cache == 'true'
+      uses: actions/cache@v4
+      with:
+        path: .simple-gal-temp/processed
+        key: simple-gal-processed-${{ hashFiles('content/**') }}
+        restore-keys: simple-gal-processed-
 
     - name: Build gallery
       shell: bash
