@@ -55,8 +55,8 @@ runs:
       uses: actions/cache@v4
       with:
         path: .simple-gal-temp/processed
-        key: simple-gal-processed-${{ hashFiles('content/**') }}
-        restore-keys: simple-gal-processed-
+        key: simple-gal-processed-${{ steps.resolve.outputs.version }}-${{ hashFiles('content/**') }}
+        restore-keys: simple-gal-processed-${{ steps.resolve.outputs.version }}-
 
     - name: Build gallery
       shell: bash
