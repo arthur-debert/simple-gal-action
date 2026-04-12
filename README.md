@@ -74,7 +74,7 @@ Add a `CNAME` file at the repo root with your domain, and copy it into the outpu
 ## How it works
 
 1. Downloads the simple-gal binary from [GitHub Releases](https://github.com/arthur-debert/simple-gal/releases)
-2. Runs `simple-gal build --source <input> --output <input>`
+2. Runs `simple-gal --output <input> build --source <input>`
 
 The action only builds. Deployment is handled by your workflow — use GitHub Pages, Netlify, Cloudflare Pages, S3, or any static host.
 

@@ -60,4 +60,4 @@ runs:
 
     - name: Build gallery
       shell: bash
-      run: simple-gal build --source "${{ inputs.source }}" --output "${{ inputs.output }}"
+      run: simple-gal --output "${{ inputs.output }}" build --source "${{ inputs.source }}"
