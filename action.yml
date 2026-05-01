@@ -40,15 +40,41 @@ runs:
 
     - name: Download simple-gal binary
       shell: bash
+      # Canonical tarball naming + layout (simple-gal v0.20.4+):
+      #   simple-gal-x86_64-unknown-linux-gnu.tar.gz
+      #     → simple-gal-x86_64-unknown-linux-gnu/simple-gal
+      # Older releases used simplified naming (`simple-gal-x86_64-linux-gnu.tar.gz`)
+      # with a flat-renamed binary at the archive root. Fall back to that
+      # if the canonical URL is missing (404), so this action keeps working
+      # against any pinned version.
       run: |
+        set -euo pipefail
         VERSION="${{ steps.resolve.outputs.version }}"
-        URL="https://github.com/arthur-debert/simple-gal/releases/download/${VERSION}/simple-gal-x86_64-linux-gnu.tar.gz"
-        echo "Downloading simple-gal ${VERSION}"
-        curl -fsSL "$URL" -o /tmp/simple-gal.tar.gz
-        tar -xzf /tmp/simple-gal.tar.gz -C /tmp
-        chmod +x /tmp/simple-gal-x86_64-linux-gnu
-        sudo mv /tmp/simple-gal-x86_64-linux-gnu /usr/local/bin/simple-gal
-        rm /tmp/simple-gal.tar.gz
+        BASE="https://github.com/arthur-debert/simple-gal/releases/download/${VERSION}"
+
+        CANONICAL_TARGET="x86_64-unknown-linux-gnu"
+        CANONICAL_URL="${BASE}/simple-gal-${CANONICAL_TARGET}.tar.gz"
+        LEGACY_URL="${BASE}/simple-gal-x86_64-linux-gnu.tar.gz"
+
+        TMP="/tmp/simple-gal-fetch"
+        rm -rf "$TMP" && mkdir -p "$TMP"
+
+        if curl -fsSL -o "$TMP/archive.tar.gz" "$CANONICAL_URL"; then
+          echo "Downloaded canonical layout from $CANONICAL_URL"
+          tar -xzf "$TMP/archive.tar.gz" -C "$TMP"
+          BIN="$TMP/simple-gal-${CANONICAL_TARGET}/simple-gal"
+        elif curl -fsSL -o "$TMP/archive.tar.gz" "$LEGACY_URL"; then
+          echo "Downloaded legacy flat layout from $LEGACY_URL"
+          tar -xzf "$TMP/archive.tar.gz" -C "$TMP"
+          BIN="$TMP/simple-gal-x86_64-linux-gnu"
+        else
+          echo "::error::Could not download simple-gal binary for ${VERSION} from either canonical or legacy URL"
+          exit 1
+        fi
+
+        chmod +x "$BIN"
+        sudo mv "$BIN" /usr/local/bin/simple-gal
+        rm -rf "$TMP"
 
     - name: Restore processed image cache
       if: inputs.cache == 'true'
